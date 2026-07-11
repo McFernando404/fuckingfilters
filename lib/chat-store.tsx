@@ -267,7 +267,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   usageKeyRef.current = usageKey;
   const [usage, setUsage] = useState<Usage>({ tokens: 0, messages: 0, chats: 0, since: 0 });
   const usageInit = useRef(false);
-  // Per-model availability (online/offline) polled from /api/models.
+  // Per-model availability (online/offline) polled from the Worker (/models).
   const [modelStatus, setModelStatus] = useState<Record<string, boolean>>({});
   const convsRef = useRef<Conversation[]>([]);
   const activeIdRef = useRef<string | null>(activeId);
