@@ -1,0 +1,66 @@
+FUCKINGFILTERS — SOURCE-AVAILABLE, VIEW-ONLY LICENSE
+
+Copyright (c) 2026 FuckingFilters. All rights reserved.
+
+This repository is published SOLELY for TRANSPARENCY and AUDIT purposes: so
+the community can READ and REVIEW the actual source code and verify that it
+does what it claims — real privacy (no storing of users' IP addresses),
+anonymous key-based accounts (no email), uncensored (abliterated) models, and
+no hidden telemetry.
+
+By accessing, reading, or inspecting this repository you agree to the
+following terms.
+
+------------------------------------------------------------------------
+1. PERMITTED (sole grant)
+------------------------------------------------------------------------
+Reading and reviewing the source code published here for transparency,
+security/privacy auditing, and technical verification purposes.
+
+------------------------------------------------------------------------
+2. PROHIBITED (NO license is granted for)
+------------------------------------------------------------------------
+- Copying, cloning, downloading to re-publish, or replicating this code, in
+  whole or in part.
+- Forking, deriving, modifying, translating, or creating derivative works.
+- Running, hosting, deploying, or putting this software into production, in
+  part or in whole.
+- Using it commercially, or to offer any service (your own or third
+  parties), including similar or competing services.
+- Training, evaluating, or fine-tuning AI models (or other systems) on this
+  code, or using it as a dataset.
+- Redistributing, selling, sublicensing, renting, or transferring the code.
+
+------------------------------------------------------------------------
+3. OWNERSHIP — ALL RIGHTS RESERVED
+------------------------------------------------------------------------
+All rights to this software are reserved by the FuckingFilters project owner.
+Nothing in this document constitutes a transfer of intellectual property or a
+license to use beyond the reading described in section 1. The fact that the
+code is publicly visible does NOT mean it is free to use or open source.
+
+------------------------------------------------------------------------
+4. NO WARRANTY
+------------------------------------------------------------------------
+The code is provided "as is", without warranty of any kind, express or
+implied. The owner is not liable for any damage arising from reading it or
+from any unauthorized use.
+
+------------------------------------------------------------------------
+5. FUTURE CHANGES
+------------------------------------------------------------------------
+The owner may, at their discretion, offer different terms in the future (for
+example, paid plans, models with limits, or different licenses). This license
+applies to the version published in this repository at the time of access.
+
+Any unauthorized use outside section 1 is a violation of copyright and of
+this license.
+
+------------------------------------------------------------------------
+About the project
+------------------------------------------------------------------------
+FuckingFilters is an uncensored, private AI service: it does not store its
+users' IP addresses, accounts are anonymous keys (no email), and payments are
+Monero-only. Its purpose is to offer abliterated models for free (with limits)
+funded by donations/purchases that upgrade the owner's hardware, with paid
+options planned for the future.

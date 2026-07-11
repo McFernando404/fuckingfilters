@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# F*ckingFilters
 
-## Getting Started
+> **Uncensored**, **private** AI chat running on self-hosted **abliterated** models. No filters, no logs, no storing your IP.
 
-First, run the development server:
+This repository holds the FuckingFilters **frontend** (Next.js). It is published for **transparency and audit**: so the community can read the real code and verify the project's privacy claims.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✅ What this code claims (and you can audit)
+- **Uncensored**: models are *abliterated* (refusal direction removed) and the *system prompt* does not moralize or refuse.
+- **Real privacy**: the code **never reads or stores your IP**. Accounts are **anonymous keys** (*gift-code* style), **no email**, no personal data.
+- **Your chats live in your browser** (localStorage); nothing is persisted server-side.
+- **No third-party telemetry or analytics.**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔒 What is NOT in this repository
+- **No private keys, tokens, or secrets.** Anything sensitive lives in the hosting environment variables (never in the code). If you spot something that looks like a secret, it is a mistake: please report it.
+- The **backend** (Cloudflare Worker) and the **models** (owner's LM Studio) are not included here.
+- `.env.example` contains **only placeholders**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Mission / funding
+Independent project. **Donations / purchases** fund upgrading the owner's hardware to offer **better free abliterated models** (with limits). **Paid options** will come later. This is the real code that runs the service.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔑 Account model
+- One account = **one key** (obtained with **Monero**). No email, no personal sign-up.
+- The key is stored **only as a hash (HMAC-SHA256)**; never in plaintext, never tied to an IP.
 
-## Learn More
+## ⚖️ License
+This code is **source-available, view-only**: you may **read and audit** it, but **NOT** copy, fork, run, modify, or use it commercially. All rights reserved. See [LICENSE](./LICENSE).
 
-To learn more about Next.js, take a look at the following resources:
+## ⚠️ Disclaimer
+F*ckingFilters is a **neutral platform** that provides access to uncensored AI models. It does not create, endorse, verify, or control model outputs, which may be inaccurate, incomplete, biased, or offensive. Use of the service and its outputs is **solely the user's responsibility**. Intended for adults only.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Status
+Work in progress (WIP). Things may change.

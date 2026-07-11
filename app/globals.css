@@ -1,26 +1,363 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode (used by next-themes with attribute="class"). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  F*ckingFilters — red / black / white identity.
+  Aggressive dark with a red→black identity and red tier accents (warm/rose =
+  uncensored, rose = code, light red = fast). Light mode is clean white/crisp.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* DAY — white / black / red */
+  --base: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --fg: #0a0a0a;
+  --muted: #525252;
+  --line: rgba(0, 0, 0, 0.10);
+  --accent: #dc2626;      /* red-600 — primary */
+  --accent-2: #991b1b;    /* red-800 */
+  --accent-3: #ef4444;    /* red-500 */
+  --accent-warm: #be123c; /* rose-700 — uncensored (AA) */
+  --accent-code: #9f1239; /* rose-800 — code (AA) */
+  --accent-fast: #b91c1c; /* red-700 — fast (AA) */
+  --ring: rgba(220, 38, 38, 0.55);
+  --glow: rgba(220, 38, 38, 0.16);
+  color-scheme: light;
+}
+
+.dark {
+  /* NIGHT — black / red */
+  --base: #08080a;
+  --surface: #0f0f12;
+  --surface-2: #18181c;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --line: rgba(255, 255, 255, 0.10);
+  --accent: #dc2626;      /* red-600 — primary (AA: white text = 5.9:1) */
+  --accent-2: #b91c1c;    /* red-700 */
+  --accent-3: #f87171;    /* red-400 */
+  --accent-warm: #f43f5e; /* rose-500 — uncensored */
+  --accent-code: #fb7185; /* rose-400 — code */
+  --accent-fast: #fca5a5; /* red-300 — fast */
+  --ring: rgba(248, 113, 113, 0.60);
+  --glow: rgba(239, 68, 68, 0.22);
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-base: var(--base);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-code: var(--accent-code);
+  --color-accent-fast: var(--accent-fast);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--base);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* App-like feel: no drag-to-select highlight on the UI (PC + mobile).
+     Form fields below stay selectable so editing still works. */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
+
+/* Keep selection where it's needed: typing/editing in form fields. */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* Disable all CSS/Tailwind keyframe animations and transitions.
+     (framer-motion is already handled by the global MotionConfig
+     reducedMotion="user"; this covers CSS animations like animate-bounce.) */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Thin, themed scrollbars (chat sidebar / message list). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 9999px;
+}
+
+/* Brand text gradient. */
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--accent) 0%,
+    var(--accent-2) 48%,
+    var(--accent-3) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft glowing blob used behind the hero / CTAs. */
+@utility aurora {
+  background-image: radial-gradient(closest-side, var(--glow), transparent);
+  filter: blur(64px);
+}
+
+/* Faint dotted grid for depth. */
+@utility grid-bg {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ----------------------------- Chat markdown ----------------------------- */
+.ff-md {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.ff-md > :first-child {
+  margin-top: 0;
+}
+.ff-md > :last-child {
+  margin-bottom: 0;
+}
+.ff-md p {
+  margin: 0.6em 0;
+}
+.ff-md h1,
+.ff-md h2,
+.ff-md h3,
+.ff-md h4 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1em 0 0.5em;
+}
+.ff-md h1 {
+  font-size: 1.4em;
+}
+.ff-md h2 {
+  font-size: 1.25em;
+}
+.ff-md h3 {
+  font-size: 1.1em;
+}
+.ff-md ul,
+.ff-md ol {
+  margin: 0.6em 0;
+  padding-left: 1.4em;
+}
+.ff-md li {
+  margin: 0.25em 0;
+}
+.ff-md ul {
+  list-style: disc;
+}
+.ff-md ol {
+  list-style: decimal;
+}
+.ff-md blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 0.7em 0;
+  padding: 0.1em 0.9em;
+  color: var(--muted);
+}
+.ff-md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ff-md hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 1em 0;
+}
+.ff-md strong {
+  font-weight: 600;
+}
+.ff-md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.7em 0;
+  font-size: 0.85em;
+  display: block;
+  overflow-x: auto;
+}
+.ff-md th,
+.ff-md td {
+  border: 1px solid var(--line);
+  padding: 0.4em 0.6em;
+  text-align: left;
+}
+.ff-md th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+/* inline code */
+.ff-code-inline {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 0.1em 0.35em;
+  border-radius: 0.35rem;
+  white-space: break-spaces;
+}
+
+/* fenced code block — always dark (like ChatGPT), in both themes */
+.ff-code {
+  margin: 0.7em 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0d1117;
+}
+.ff-code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4em 0.5em 0.4em 0.85em;
+  background: #161b22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ff-code-lang {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8b949e;
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+.ff-code-copy {
+  font-size: 0.7rem;
+  color: #c9d1d9;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.4rem;
+  padding: 0.15em 0.6em;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.ff-code-copy:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.ff-code-pre {
+  margin: 0;
+  padding: 0.9em 1em;
+  overflow-x: auto;
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.ff-code-pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* highlight.js token colors (GitHub-dark inspired) */
+.hljs {
+  color: #e6edf3;
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag {
+  color: #ff7b72;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: #a5d6ff;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-bullet {
+  color: #79c0ff;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #d2a8ff;
+}
+.hljs-title.class_,
+.hljs-type,
+.hljs-built_in {
+  color: #ffa657;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-property {
+  color: #79c0ff;
+}
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #7ee787;
+}
+.hljs-symbol,
+.hljs-meta {
+  color: #79c0ff;
+}
+.hljs-deletion {
+  color: #ffa657;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 600;
+}
+
