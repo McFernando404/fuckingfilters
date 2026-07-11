@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useAccount } from "./account";
 import { useI18n } from "./i18n";
+import { WORKER_URL, authHeaders } from "./worker";
 
 export type ChatRole = "user" | "assistant";
 
@@ -275,6 +276,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   typingChatsRef.current = typingChats;
   const tRef = useRef(t);
   tRef.current = t;
+  const accountRef = useRef(account);
+  accountRef.current = account;
   // Generation lives here (above the routes) so it survives navigation. We do
   // NOT abort on any unmount — that would be exactly the freeze the user hit.
   const abortRef = useRef<AbortController | null>(null);
@@ -375,7 +378,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     const check = async () => {
       try {
-        const r = await fetch("/api/models", { cache: "no-store" });
+        const r = await fetch(WORKER_URL + "/models", { cache: "no-store" });
         const d = (await r.json()) as { online?: boolean; models?: string[] };
         if (cancelled) return;
         const up = d.online === true;
@@ -535,10 +538,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       const t0 = Date.now();
       (async () => {
         try {
-          const res = await fetch("/api/chat", {
+          const res = await fetch(WORKER_URL + "/chat", {
             method: "POST",
             signal: controller.signal,
-            headers: { "Content-Type": "application/json" },
+            headers: authHeaders(accountRef.current),
             body: JSON.stringify({
               model: model.id,
               messages: apiMessages,

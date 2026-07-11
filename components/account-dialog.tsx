@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import Link from "next/link";
 import { generateAccountKey, useAccount } from "@/lib/account";
+import { createAccountOnServer } from "@/lib/worker";
 import { useFocusTrap } from "@/lib/focus-trap";
 import { useInertAppRoot } from "@/lib/use-inert-app-root";
 import { createPortal } from "react-dom";
@@ -88,8 +89,11 @@ export function AccountDialog({
     }
   };
 
-  const accept = () => {
+  const accept = async () => {
     if (!key || !accepted) return;
+    // Register the code's hash in the backend before closing, so the next chat
+    // request is already authorized (avoids a create/verify race).
+    await createAccountOnServer(key);
     if (!setAccount(key, { requirePersist: true })) {
       // localStorage write failed (private mode / quota / disabled). The key
       // was NOT persisted and the in-memory account was NOT set — keep the

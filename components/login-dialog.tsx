@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { isValidAccountKey, useAccount } from "@/lib/account";
+import { verifyAccountOnServer } from "@/lib/worker";
 import { useFocusTrap } from "@/lib/focus-trap";
 import { useInertAppRoot } from "@/lib/use-inert-app-root";
 import { createPortal } from "react-dom";
@@ -20,6 +21,7 @@ export function LoginDialog({
   const [value, setValue] = useState("");
   const [error, setError] = useState(false);
   const [persistWarn, setPersistWarn] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [visible, setVisible] = useState(open);
   useEffect(() => {
     if (open) setVisible(true);
@@ -35,6 +37,7 @@ export function LoginDialog({
       setValue("");
       setError(false);
       setPersistWarn(false);
+      setChecking(false);
     }
   }, [open]);
 
@@ -55,7 +58,7 @@ export function LoginDialog({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, dismiss]);
 
-  const submit = () => {
+  const submit = async () => {
     if (persistWarn) {
       // Second activation after a persistence warning = proceed anyway.
       onClose();
@@ -65,7 +68,17 @@ export function LoginDialog({
       setError(true);
       return;
     }
-    if (!setAccount(value.trim())) {
+    const code = value.trim();
+    setChecking(true);
+    const exists = await verifyAccountOnServer(code);
+    setChecking(false);
+    if (exists === false) {
+      // The Worker confirms this code is NOT a registered account.
+      setError(true);
+      return;
+    }
+    // exists === true -> ok; null -> couldn't reach the Worker, proceed best-effort.
+    if (!setAccount(code)) {
       // localStorage unavailable — the key isn't persisted. Warn (the user
       // holds the key, so it's recoverable, but the failure must not be silent).
       setPersistWarn(true);
@@ -146,9 +159,10 @@ export function LoginDialog({
               <button
                 type="button"
                 onClick={submit}
-                className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_var(--glow)] transition hover:brightness-110"
+                disabled={checking}
+                className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_var(--glow)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {persistWarn ? t.account.persistContinue : t.login.submit}
+                {checking ? "…" : persistWarn ? t.account.persistContinue : t.login.submit}
               </button>
             </div>
           </motion.div>

@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import { useAccount } from "@/lib/account";
 import { fileToAvatar, useProfile } from "@/lib/profile";
-import { useChats } from "@/lib/chat-store";
+import { fetchUsage, type ServerUsage } from "@/lib/worker";
 import { AccountDialog } from "./account-dialog";
 import { LoginButton } from "./buttons";
 import { ThemeToggle } from "./theme-toggle";
@@ -44,7 +44,17 @@ export function AccountView() {
   const { account, mounted, clearAccount } = useAccount();
   const { profile, mounted: profileMounted, persistError, setDisplayName, setAvatar } =
     useProfile();
-  const { usage } = useChats();
+  const [usage, setUsage] = useState<ServerUsage | null>(null);
+  useEffect(() => {
+    if (!account) return;
+    let cancelled = false;
+    fetchUsage(account).then((u) => {
+      if (!cancelled) setUsage(u);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [account]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -64,17 +74,6 @@ export function AccountView() {
   }, [profile.displayName]);
 
   const fmt = (n: number) => n.toLocaleString(locale === "es" ? "es" : "en");
-  const fmtDate = (ts: number) => {
-    try {
-      return new Intl.DateTimeFormat(locale === "es" ? "es" : "en", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(ts);
-    } catch {
-      return "";
-    }
-  };
 
   const copy = async () => {
     if (!account) return;
@@ -320,12 +319,14 @@ export function AccountView() {
         {/* Usage */}
         <Card title={t.account.usageSection}>
           <div className="grid grid-cols-3 gap-3">
-            <Stat label={t.account.tokensUsed} value={ready ? fmt(usage.tokens) : "0"} />
-            <Stat label={t.account.messagesStat} value={ready ? fmt(usage.messages) : "0"} />
-            <Stat label={t.account.conversationsStat} value={ready ? fmt(usage.chats) : "0"} />
+            <Stat label={t.account.tokensUsed} value={ready ? fmt(usage?.tokens_used ?? 0) : "0"} />
+            <Stat label={t.account.messagesStat} value={ready ? fmt(usage?.messages ?? 0) : "0"} />
+            <Stat label={t.account.conversationsStat} value={ready ? fmt(usage?.chats ?? 0) : "0"} />
           </div>
           <p className="mt-3 text-[11px] text-muted">
-            {t.account.memberSince} {fmtDate(usage.since)}
+            {ready && usage
+              ? `${t.account.dailyUsage}: ${usage.messages_today} / ${usage.daily_limit}`
+              : ""}
           </p>
         </Card>
 
