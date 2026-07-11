@@ -333,28 +333,41 @@ export function AccountView() {
         {/* Limits & billing */}
         <Card title={t.account.limits}>
           <div className="space-y-1.5">
-            {[t.account.dailyLimit, t.account.weeklyLimit, t.account.monthlyLimit].map(
-              (label) => (
+            {(() => {
+              const daily = usage?.daily_limit ?? 50;
+              const rows = [
+                { label: t.account.dailyLimit, value: fmt(daily) },
+                { label: t.account.weeklyLimit, value: fmt(daily * 7) },
+                { label: t.account.monthlyLimit, value: fmt(daily * 30) },
+              ];
+              return rows.map((row) => (
                 <div
-                  key={label}
-                  className="flex cursor-not-allowed items-center justify-between rounded-lg border border-line bg-surface-2/50 px-3 py-2 text-sm text-muted opacity-70"
+                  key={row.label}
+                  className="flex items-center justify-between rounded-lg border border-line bg-surface-2/50 px-3 py-2 text-sm"
                 >
-                  <span>{label}</span>
-                  <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
-                    ◐ {t.account.comingSoon}
-                  </span>
+                  <span className="text-muted">{row.label}</span>
+                  <span className="font-semibold tabular-nums text-fg">{row.value}</span>
                 </div>
-              )
-            )}
+              ));
+            })()}
           </div>
-          <button
-            type="button"
-            disabled
-            className="mt-3 flex w-full cursor-not-allowed items-center justify-between rounded-lg border border-line bg-surface-2/50 px-3 py-2.5 text-sm text-muted opacity-70"
-          >
-            <span className="font-medium">◈ {t.account.buyOrDonate}</span>
-            <span className="text-[10px]">{t.account.buyOrDonateNote}</span>
-          </button>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              disabled
+              className="flex cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-line bg-surface-2/50 px-3 py-2.5 text-sm font-medium text-muted opacity-70"
+            >
+              ♡ {t.account.donate}
+            </button>
+            <button
+              type="button"
+              disabled
+              className="flex cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-line bg-surface-2/50 px-3 py-2.5 text-sm font-medium text-muted opacity-70"
+            >
+              ◈ {t.account.buyLicense}
+            </button>
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted">{t.account.comingSoon}</p>
         </Card>
 
         {/* Logout */}
