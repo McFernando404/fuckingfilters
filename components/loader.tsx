@@ -85,10 +85,9 @@ function LoaderOverlay({ onDone }: { onDone: () => void }) {
 }
 
 export function Loader({ children }: { children: ReactNode }) {
-  // done defaults to true (SSR-safe: no overlay, page interactive). It is only
-  // flipped to false in a post-mount effect for a first-visit intro — so SSR
-  // and the first client render always agree (no hydration mismatch), and the
-  // intro plays at most once per browser session.
+  // `done` defaults to true so SSR and first client render agree (no hydration
+  // mismatch) and the page stays interactive. It flips to false in a post-mount
+  // effect to play the first-visit intro at most once per session.
   const [done, setDone] = useState(true);
   const [show, setShow] = useState(false);
   useEffect(() => {

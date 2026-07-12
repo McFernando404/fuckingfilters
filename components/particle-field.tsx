@@ -5,17 +5,13 @@ import { useReducedMotion } from "framer-motion";
 import { useTheme } from "next-themes";
 
 /* ------------------------------------------------------------------ *
- * Full-page ambient particle field.
+ * Full-page ambient particle field. The canvas is fixed to the viewport,
+ * but particles live in document coordinates and render at (x, y - scrollY),
+ * so they stay anchored to the page as you scroll past them.
  *
- * The canvas is fixed to the viewport (cheap backing store), but the
- * particles live in DOCUMENT coordinates and are rendered at
- * (x, y - scrollY). So they are anchored to the page: when you scroll,
- * they stay where they are and you move past them — they do NOT follow
- * the viewport.
- *
- * Theme-aware + VISIBLE IN BOTH MODES:
- *   - dark:  additive "lighter" cyan particles (glow).
- *   - light: normal "source-over" indigo/violet (additive can't light white).
+ * Theme-aware and visible in both modes:
+ *   - dark:  additive "lighter" red particles (glow).
+ *   - light: normal "source-over" red (additive can't light white).
  *
  * Honors prefers-reduced-motion (one static frame, repainted on resize).
  * pointer-events-none.

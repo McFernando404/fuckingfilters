@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
 import { HeroCtas } from "./buttons";
 
-// 3D emblem — client only.
+// Hero emblem — client only.
 const HeroEmblem = dynamic(
   () => import("./hero-emblem").then((m) => m.HeroEmblem),
   { ssr: false, loading: () => <div className="h-full w-full" /> },
@@ -69,7 +69,7 @@ export function Hero() {
           </motion.p>
         </div>
 
-        {/* 3D emblem */}
+        {/* emblem */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

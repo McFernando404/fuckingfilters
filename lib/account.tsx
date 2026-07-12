@@ -17,16 +17,14 @@ const ALPHABET =
   "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 
 /**
- * Cryptographically random account code using an unambiguous alphabet
- * (no 0/O or 1/I/l). Runs in the browser via crypto.getRandomValues.
+ * Cryptographically random code over the unambiguous alphabet, generated in
+ * the browser via crypto.getRandomValues with rejection sampling (no modulo
+ * bias, so every symbol is exactly equally likely).
  *
- * UNIQUENESS: the body is 128 chars over a 57-symbol alphabet, i.e. a space
- * of 57^128 ≈ 2.3 × 10^225 possible codes. By the birthday bound you would
- * need on the order of 10^112 accounts before a 50% collision chance — so a
- * freshly generated code will, in practice, never match another user's. To
- * also be technically uniform, we use rejection sampling (no modulo bias) so
- * every symbol is exactly equally likely. Final uniqueness is additionally
- * enforced server-side once a backend exists (regenerate-on-collision).
+ * For the default 128-char account body the keyspace is ~2.3 × 10^225
+ * (57^128); by the birthday bound ~10^112 accounts are needed for a 50%
+ * collision chance, so a fresh code is practically unique. Final uniqueness
+ * is enforced server-side (regenerate-on-collision) once a backend exists.
  */
 export function generateCode(length: number): string {
   const n = ALPHABET.length; // 57 unambiguous symbols
@@ -58,17 +56,16 @@ export function generateAccountKey(): string {
 }
 
 /**
- * Generate an account key that is GUARANTEED unique by checking each candidate
- * against `isTaken` (which should query the backend's key/HASH store, e.g. a
- * SELECT on a UNIQUE-indexed column). Retries on collision.
+ * Generate an account key guaranteed unique by checking each candidate
+ * against `isTaken` (query the backend's HMAC-hash store, e.g. a SELECT on a
+ * UNIQUE-indexed column), retrying on collision.
  *
- * The raw generator is a 746-bit CSPRNG with rejection sampling, so a
- * collision is already astronomically unlikely (~10^112 accounts for a 50%
- * chance). This loop turns "practically unique" into "100% unique" the moment
- * it is paired with a database UNIQUE constraint.
+ * The raw generator is a 746-bit CSPRNG, so collisions are already
+ * astronomically unlikely; this loop makes uniqueness absolute once paired
+ * with a database UNIQUE constraint.
  *
  * Per the privacy model the server stores only an HMAC hash of the key, so
- * `isTaken` should hash the candidate and check that hash for existence.
+ * `isTaken` should hash the candidate before checking existence.
  */
 export async function generateUniqueAccountKey(
   isTaken: (key: string) => Promise<boolean>,
@@ -115,10 +112,9 @@ type AccountState = {
 const AccountContext = createContext<AccountState | null>(null);
 
 /**
- * Shared account store. Every consumer reads the SAME state, so creating or
- * logging in from one place (the dialog) instantly updates every other place
- * (hero buttons, chat gate, account page). Previously each useAccount() call
- * held its own state, so the UI never reacted to a creation — fixed here.
+ * Shared account store: every consumer reads the same state, so a create or
+ * login in the dialog instantly updates the hero buttons, chat gate, and
+ * account page.
  *
  * NOTE: intentionally client/localStorage only — no server, no DB yet.
  */
@@ -155,13 +151,13 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  // Returns true if the key was persisted to localStorage, false if storage is
-  // unavailable (private mode / quota / disabled).
-  // - default (ephemeral): set the in-memory account anyway so the session
-  //   works (used by login and the "continue anyway" flow).
-  // - { requirePersist: true }: leave the in-memory account UNTOUCHED on
-  //   failure, so account-creation callers can warn the user and the
-  //   unrecoverable key isn't silently committed to a stale session.
+  // Returns true if persisted to localStorage, false if storage is unavailable
+  // (private mode / quota / disabled).
+  // - default (ephemeral): still set the in-memory account so the session
+  //   works (login and "continue anyway" flow).
+  // - { requirePersist: true }: leave the in-memory account untouched on
+  //   failure, so creation callers can warn the user and an unrecoverable key
+  //   isn't silently committed to a stale session.
   const setAccount = useCallback(
     (code: string, opts?: { requirePersist?: boolean }): boolean => {
       const trimmed = code.trim();

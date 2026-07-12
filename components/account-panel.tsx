@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
 
 /**
- * "My account" entry point. Navigates to the dedicated /account page
- * (a full page is clearer than a popover). `variant="hero"` for the landing
- * CTA row, `variant="sidebar"` for the chat sidebar footer.
+ * "My account" entry point — links to the dedicated /account page (clearer
+ * than a popover). `variant="hero"` for the landing CTA, `variant="sidebar"`
+ * for the chat sidebar footer.
  */
 export function AccountMenu({ variant = "hero" }: { variant?: "hero" | "sidebar" }) {
   const { t } = useI18n();

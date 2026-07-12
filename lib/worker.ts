@@ -1,8 +1,8 @@
 "use client";
 
-// Cloudflare Worker backend (accounts + chat proxy + usage). This is a PUBLIC
-// URL the browser calls directly — it is NOT your PC and NOT a secret. Set it
-// via NEXT_PUBLIC_WORKER_URL (.env.local for dev, Vercel env for production).
+// Cloudflare Worker backend (accounts, chat proxy, usage). This is a public,
+// browser-facing URL — not a secret. Configure via NEXT_PUBLIC_WORKER_URL
+// (.env.local for dev, Vercel env for production).
 const RAW = (process.env.NEXT_PUBLIC_WORKER_URL || "").trim();
 export const WORKER_URL = RAW.replace(/\/+$/, "");
 export const hasWorker = () => WORKER_URL.length > 0;

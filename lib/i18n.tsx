@@ -21,9 +21,9 @@ const I18nContext = createContext<I18nValue | null>(null);
 const STORAGE_KEY = "aiu-locale";
 
 /**
- * Lightweight i18n. The default locale is "en" so the server render and the
- * first client render agree (preventing a hydration mismatch). The saved
- * preference is then applied in an effect after mount.
+ * Lightweight i18n. Default locale is "en" so SSR and the first client render
+ * agree (avoids a hydration mismatch); the saved preference is applied in an
+ * effect after mount.
  */
 export function I18nProvider({
   children,
@@ -46,9 +46,8 @@ export function I18nProvider({
     }
   }, []);
 
-  // Keep <html lang> in sync for accessibility / SEO, and mirror the locale to
-  // a cookie so the server (app/layout.tsx) can render the right lang on first
-  // paint (helps screen readers and crawlers for returning users).
+  // Keep <html lang> in sync (a11y/SEO) and mirror the locale to a cookie so
+  // the server (app/layout.tsx) renders the right lang on first paint.
   useEffect(() => {
     document.documentElement.lang = locale;
     try {

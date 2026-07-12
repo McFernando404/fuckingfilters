@@ -37,8 +37,8 @@ export function CreateAccountButton({ size = "md" }: { size?: Size }) {
         {t.hero.primary}
       </motion.button>
 
-      {/* On accept we just close — the hero CTAs then switch to
-          [Open chat][My account] thanks to the account-aware state. */}
+      {/* On accept we just close; the hero CTAs then switch to [Open chat]
+          [My account] via account-aware state. */}
       <AccountDialog open={open} onClose={() => setOpen(false)} />
     </>
   );

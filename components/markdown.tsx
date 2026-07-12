@@ -70,12 +70,11 @@ const components: Components = {
 };
 
 /**
- * ChatGPT-like markdown rendering for model output. Safe by default
- * (react-markdown does not render raw HTML, so untrusted LLM output can't XSS).
+ * Markdown renderer for model output. Safe by default: react-markdown
+ * doesn't render raw HTML, so untrusted output can't XSS.
  *
- * `streaming` skips syntax highlighting while the reply is still arriving —
- * re-highlighting on every typewriter tick would be O(n^2). Colors appear once
- * the message finishes.
+ * `streaming` skips syntax highlighting until the reply completes —
+ * re-highlighting on every typewriter tick is O(n^2).
  */
 export const Markdown = memo(function Markdown({
   content,

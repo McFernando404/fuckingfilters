@@ -45,9 +45,9 @@ export function ThemeToggle() {
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
 
-  // next-themes resolves the theme on the client only; gate every
-  // theme-derived value behind `mounted` so server and first client render
-  // agree (preventing a hydration mismatch on aria-label/title/icon).
+  // next-themes resolves on the client only; gate theme-derived values behind
+  // `mounted` so server and first render agree (avoids hydration mismatch on
+  // aria-label/title/icon).
   useEffect(() => setMounted(true), []);
 
   const isDark = mounted && resolvedTheme === "dark";

@@ -278,8 +278,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   tRef.current = t;
   const accountRef = useRef(account);
   accountRef.current = account;
-  // Generation lives here (above the routes) so it survives navigation. We do
-  // NOT abort on any unmount — that would be exactly the freeze the user hit.
+  // Generation lives here (above the routes) so it survives navigation. We
+  // never abort on unmount — doing so previously caused a UI freeze.
   const abortRef = useRef<AbortController | null>(null);
   const typingTimerRef = useRef<number | null>(null);
   const loadFailed = useRef(false);

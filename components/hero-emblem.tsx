@@ -67,7 +67,7 @@ export function HeroEmblem() {
         }}
       />
 
-      {/* the static, theme-aware "A" emblem */}
+      {/* the static, theme-aware emblem */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="h-[70%] w-[70%]">
           <EmblemA className="h-full w-full" />

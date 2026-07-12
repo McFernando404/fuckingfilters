@@ -1,10 +1,9 @@
 "use client";
 
 /**
- * Catches errors thrown inside the root layout's tree (e.g. a provider crash
- * or malformed persisted data that bypasses validation). Must render its own
- * <html>/<<body> (it replaces the root layout). Inline styles because the
- * global stylesheet / Tailwind are not guaranteed to be loaded here.
+ * Catches errors in the root layout's tree (e.g. a provider crash or malformed
+ * persisted data). Replaces the root layout, so it renders its own <html>/<body>
+ * with inline styles — the global stylesheet/Tailwind may not be loaded here.
  */
 export default function GlobalError({
   reset,

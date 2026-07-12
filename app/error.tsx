@@ -3,10 +3,9 @@
 import Link from "next/link";
 
 /**
- * Route-level error boundary: catches render errors in a page (e.g. a
- * malformed persisted entry that slipped past validation) and offers an
- * in-app reset instead of a blank screen. Hardcoded English on purpose —
- * no i18n dependency, so it still renders if the error came from i18n itself.
+ * Route-level error boundary: catches page render errors (e.g. a malformed
+ * persisted entry) and offers an in-app reset. Hardcoded English on purpose —
+ * no i18n dependency, so it still renders if i18n itself failed.
  */
 export default function Error({
   reset,

@@ -95,10 +95,9 @@ export function AccountDialog({
     // request is already authorized (avoids a create/verify race).
     await createAccountOnServer(key);
     if (!setAccount(key, { requirePersist: true })) {
-      // localStorage write failed (private mode / quota / disabled). The key
-      // was NOT persisted and the in-memory account was NOT set — keep the
-      // dialog open and warn the user to copy it now (it is unrecoverable
-      // after close).
+      // localStorage write failed (private mode / quota / disabled): the key
+      // was NOT persisted. Keep the dialog open and warn the user to copy it
+      // now — it is unrecoverable after close.
       setPersistError(true);
       return;
     }
